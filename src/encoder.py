@@ -1,6 +1,9 @@
 import abc
+import numpy as np
 import tensorflow_hub as hub
 from simcse import SimCSE
+from rank_bm25 import BM25Okapi
+from nltk import word_tokenize
 from sentence_transformers import SentenceTransformer
 
 class SentenceEncoder(abc.ABC):
