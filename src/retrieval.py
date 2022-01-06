@@ -6,7 +6,7 @@ from allennlp.predictors.predictor import Predictor
 class SimilarityStrategy(abc.ABC):
 
     @abc.abstractmethod
-    def compute(self, sample, claim_embeddings, k, encoder, prepend_title=True):
+    def compute(self, sample, claim_embeddings, k, encoder, *args):
         NotImplemented
 
     def get_top_claim_index(self, scores, k):
@@ -22,9 +22,9 @@ class SimilarityStrategy(abc.ABC):
 
 class BaselineSimilarityStrategy(SimilarityStrategy):
 
-    def compute(self, sample, claim_db, k, encoder, prepend_title=True):
+    def compute(self, sample, claim_db, k, encoder, prepend_title_sentence=True, *args):
 
-        if prepend_title and "title" in sample:
+        if prepend_title_sentence and "title" in sample:
             sentence = sample["title"] + " " + sample["sentence"]
         else:
             sentence = sample["sentence"]
@@ -41,10 +41,10 @@ class SRLSimilarityStrategy(SimilarityStrategy):
         self.srl_predictor = Predictor.from_path("https://storage.googleapis.com/allennlp-public-models/structured-prediction-srl-bert.2020.12.15.tar.gz")
         self.srl_predictor._model = self.srl_predictor._model.cuda()
 
-    def compute(self, sample, claim_db, k, encoder, prepend_title=True):
+    def compute(self, sample, claim_db, k, encoder, prepend_title_sentence=True, prepend_title_frame=True):
         
 
-        if prepend_title and "title" in sample:
+        if prepend_title_sentence and "title" in sample:
             sentence = sample["title"] + " " + sample["sentence"]
         else:
             sentence = sample["sentence"]
@@ -59,7 +59,7 @@ class SRLSimilarityStrategy(SimilarityStrategy):
         frames = sample["frames"]
         for frame in frames:
 
-            if prepend_title and "title" in sample:
+            if prepend_title_frame and "title" in sample:
                 frame = sample["title"] + " " + frame
 
             frame_embedding = encoder.encode(frame)
@@ -97,7 +97,7 @@ class ClaimRetriever:
         self.claim_db = encoder_and_database_factory.get_database(claims)
         self.similarity_strategy = similarity_strategy
 
-    def retrieve(self, samples, k, prepend_title):
+    def retrieve(self, samples, k, prepend_title_sentence=True, prepend_title_frame=True):
         """Return a list of claim index
         
         Args:
@@ -117,6 +117,6 @@ class ClaimRetriever:
         """
         indexes = []
         for sample in tqdm(samples):
-            indexes.append(self.similarity_strategy.compute(sample, self.claim_db, k, self.encoder, prepend_title))
+            indexes.append(self.similarity_strategy.compute(sample, self.claim_db, k, self.encoder, prepend_title_sentence, prepend_title_frame))
 
         return indexes
