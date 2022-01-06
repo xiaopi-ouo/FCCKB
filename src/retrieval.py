@@ -73,7 +73,7 @@ class SRLSimilarityStrategy(SimilarityStrategy):
     def get_frames(self, sample):
         frames = []
         try:
-            res = self.predictor.predict(
+            res = self.srl_predictor.predict(
                 sentence=sample["sentence"]
             )
             words = res["words"]
@@ -84,8 +84,8 @@ class SRLSimilarityStrategy(SimilarityStrategy):
                         buffer.append(word)
 
                 frames.append(" ".join(buffer))
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         return frames
 
