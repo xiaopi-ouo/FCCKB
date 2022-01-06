@@ -58,6 +58,10 @@ class SRLSimilarityStrategy(SimilarityStrategy):
 
         frames = sample["frames"]
         for frame in frames:
+
+            if prepend_title and "title" in sample:
+                frame = sample["title"] + " " + frame
+
             frame_embedding = encoder.encode(frame)
             similarity = claim_db.get_scores(frame_embedding)
             scores = np.maximum(scores, similarity)
@@ -74,7 +78,7 @@ class SRLSimilarityStrategy(SimilarityStrategy):
             )
             words = res["words"]
             for frame in res["verbs"]:
-                buffer = [sample["title"]]
+                buffer = []
                 for word, tag in zip(words, frame["tags"]):
                     if tag != "O":
                         buffer.append(word)
