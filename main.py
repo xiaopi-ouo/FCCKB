@@ -7,18 +7,25 @@ from src.encoder import *
 from src.metric import *
 from src.retrieval import *
 
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    if v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    return argparse.ArgumentTypeError('Unsupported value encounter.')
+
 parser = argparse.ArgumentParser()
 parser.add_argument("path_data", help="path of data. eg. ./dataset/train.json", type=str)
 parser.add_argument("path_out", help="root directoy for saving result. eg. ./save", type=str)
 parser.add_argument("-k", help="to retrieve K claims.", default=100, type=int)
 parser.add_argument("-s", "--strategy", help="simialarity strategy", default="srl", type=str)
 parser.add_argument("-e", "--encoder_name", help="sentence encoder for query sentence encoding", default="sbert", type=str)
-parser.add_argument("-t", "--prepend_title_sentence", help="prepend title to the sentence or not", default=True, type=bool)
-parser.add_argument("-f", "--prepend_title_frame", help="prepend title to frames or not", default=True, type=bool)
+
+parser.add_argument("-t", "--prepend_title_sentence", help="prepend title to the sentence or not", type=str2bool, nargs='?', const=True)
+parser.add_argument("-f", "--prepend_title_frame", help="prepend title to frames or not", type=str2bool, nargs='?', const=True)
 args = parser.parse_args()
 
 if __name__ == "__main__":
-
 
     with open(args.path_data) as f:
         data = json.load(f)
@@ -54,5 +61,3 @@ if __name__ == "__main__":
 
     with open(os.path.join(args.path_out, f"{args.encoder_name}-{args.strategy}.pkl"), "wb") as f:
         pickle.dump(retrieval_result, f)
-
-
