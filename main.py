@@ -21,8 +21,8 @@ parser.add_argument("-k", help="to retrieve K claims.", default=100, type=int)
 parser.add_argument("-s", "--strategy", help="simialarity strategy", default="srl", type=str)
 parser.add_argument("-e", "--encoder_name", help="sentence encoder for query sentence encoding", default="sbert", type=str)
 
-parser.add_argument("-t", "--prepend_title_sentence", help="prepend title to the sentence or not", type=str2bool, nargs='?', const=True)
-parser.add_argument("-f", "--prepend_title_frame", help="prepend title to frames or not", type=str2bool, nargs='?', const=True)
+parser.add_argument("-t", "--prepend_title_sentence", help="prepend title to the sentence or not", type=str2bool, nargs='?', const=True, default=True)
+parser.add_argument("-f", "--prepend_title_frame", help="prepend title to frames or not", type=str2bool, nargs='?', const=True, default=True)
 args = parser.parse_args()
 
 if __name__ == "__main__":
