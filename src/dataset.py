@@ -1,6 +1,4 @@
-from torch.utils.data import Dataset
-
-class FEVERDataset(Dataset):
+class FEVERDataset:
 
     def __init__(self, data):
         self.data = data
@@ -12,10 +10,6 @@ class FEVERDataset(Dataset):
         current_claim_index = 0
         for evidence in data["evidence"]:
             self.golden_index.append(evidence["claim-id"])
-       
-        
-    def __getitem__(self, index):
-        return self.evidences[index], self.golden_index[index]
     
     def get_evidence(self):
         return self.data["evidence"]
