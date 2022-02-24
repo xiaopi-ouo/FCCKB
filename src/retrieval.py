@@ -93,13 +93,27 @@ class SRLSimilarityStrategy(SimilarityStrategy):
 class ClaimRetriever:
     
     def __init__(self, claims, encoder_and_database_factory, similarity_strategy):
+        """Constructor
+
+        Args:
+            claims (`List[str]`):
+                claims in the database.
+            encoder_and_database_factory:
+                factory to create the database and the encoder to encode query sentences.
+            similarity_strategy:
+                BaselineSimilarityStrategy or SRLSimilarityStrategy.
+                
+        Return:
+            `List[List[int]]`: Indexes of retrieved claims for each sample.
+            
+        """
         self.encoder = encoder_and_database_factory.get_encoder()
         self.claim_db = encoder_and_database_factory.get_database(claims)
         self.similarity_strategy = similarity_strategy
 
     def retrieve(self, samples, k, prepend_title_sentence=True, prepend_title_frame=True):
         """Return a list of claim index
-        
+
         Args:
             samples (`List[dict]`):
                 each element has the following key
